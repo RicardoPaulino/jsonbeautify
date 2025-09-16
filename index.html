@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Beautify JSON</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Cores JSON */
+    .key { color: #1d4ed8; }      /* Azul escuro */
+    .string { color: #b45309; }   /* Laranja escuro */
+    .number { color: #065f46; }   /* Verde escuro */
+    .boolean { color: #1e40af; }  /* Azul forte */
+    .null { color: #6b21a8; }     /* Roxo escuro */
+  </style>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col items-center p-6">
+
+  <h2 class="text-2xl font-bold mb-4 text-gray-800">Beautify JSON</h2>
+
+  <textarea 
+    id="jsonInput" 
+    placeholder="Cole seu JSON aqui..." 
+    class="w-full max-w-3xl h-48 p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4 resize-none bg-white text-gray-900 font-mono">
+  </textarea>
+
+  <div class="flex flex-wrap gap-3 mb-4">
+    <button onclick="beautify()" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600">Formatar</button>
+    <button onclick="limparInput()" class="px-4 py-2 bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600">Limpar Input</button>
+    <button onclick="limparResultado()" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600">Limpar Resultado</button>
+    <button onclick="copiarResultado()" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600">Copiar Resultado</button>
+  </div>
+
+  <pre 
+    id="output" 
+    class="w-full max-w-3xl bg-gray-200 text-gray-800 p-4 rounded-lg shadow overflow-x-auto min-h-[150px] whitespace-pre-wrap font-mono">
+  </pre>
+
+  <script>
+    function syntaxHighlight(json) {
+      json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return json.replace(/("(\\u[\da-fA-F]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+-]?\d+)?)/g,
+        function (match) {
+          let cls = 'number';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'key';
+            } else {
+              cls = 'string';
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
+
+    function beautify() {
+      const input = document.getElementById("jsonInput").value;
+      try {
+        const obj = JSON.parse(input);
+        const pretty = JSON.stringify(obj, null, 4);
+        document.getElementById("output").innerHTML = syntaxHighlight(pretty);
+      } catch (e) {
+        document.getElementById("output").textContent = "⚠️ JSON inválido!";
+      }
+    }
+
+    function limparResultado() {
+      document.getElementById("output").textContent = "";
+    }
+
+    function limparInput() {
+      document.getElementById("jsonInput").value = "";
+    }
+
+    function copiarResultado() {
+      const outputElement = document.getElementById("output");
+      const tempElement = document.createElement("textarea");
+      tempElement.value = outputElement.innerText;
+      document.body.appendChild(tempElement);
+      tempElement.select();
+      document.execCommand("copy");
+      document.body.removeChild(tempElement);
+
+      const toast = document.createElement('div');
+      toast.textContent = "✅ Resultado copiado!";
+      toast.className = "fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-500 z-50";
+      document.body.appendChild(toast);
+      setTimeout(() => { toast.classList.add('opacity-100'); }, 10);
+      setTimeout(() => { toast.classList.remove('opacity-100'); }, 2000);
+      setTimeout(() => { document.body.removeChild(toast); }, 2500);
+    }
+  </script>
+</body>
+</html>
