@@ -3,38 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <title>Beautify JSON</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
     /* Cores JSON */
-    .key { color: #1d4ed8; }      /* Azul escuro */
-    .string { color: #b45309; }   /* Laranja escuro */
-    .number { color: #065f46; }   /* Verde escuro */
+    .key { color: #2563eb; }      /* Azul */
+    .string { color: #d97706; }   /* Laranja */
+    .number { color: #059669; }   /* Verde */
     .boolean { color: #1e40af; }  /* Azul forte */
-    .null { color: #6b21a8; }     /* Roxo escuro */
+    .null { color: #9333ea; }     /* Roxo */
   </style>
 </head>
-<body class="bg-black text-white min-h-screen flex flex-col items-center p-6">
+<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col items-center p-8">
 
-  <h2 class="text-2xl font-bold mb-4 text-gray-800">Beautify JSON</h2>
+  <h2 class="text-3xl font-bold mb-8 text-gray-800">Beautify JSON</h2>
 
+  <!-- Input -->
   <textarea 
     id="jsonInput" 
     placeholder="Cole seu JSON aqui..." 
-    class="w-full max-w-3xl h-48 p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4 resize-none bg-white text-gray-900 font-mono">
+    class="w-full max-w-4xl h-[200px] p-4 border border-gray-300 rounded-xl shadow focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none bg-white text-gray-900 font-mono mb-4">
   </textarea>
 
-  <div class="flex flex-wrap gap-3 mb-4">
-    <button onclick="beautify()" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600">Formatar</button>
-    <button onclick="limparInput()" class="px-4 py-2 bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600">Limpar Input</button>
-    <button onclick="limparResultado()" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600">Limpar Resultado</button>
-    <button onclick="copiarResultado()" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600">Copiar Resultado</button>
+  <!-- Botões -->
+  <div class="flex space-x-4 mb-6">
+    <button onclick="beautify()" class="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition">Formatar</button>
+    <button onclick="limparInput()" class="px-6 py-2 bg-yellow-400 text-gray-900 rounded-lg shadow hover:bg-yellow-500 transition">Limpar Input</button>
+    <button onclick="limparResultado()" class="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition">Limpar Resultado</button>
+    <button onclick="copiarResultado()" class="px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">Copiar Resultado</button>
   </div>
 
+  <!-- Output -->
   <pre 
     id="output" 
-    class="w-full max-w-3xl bg-gray-200 text-gray-800 p-4 rounded-lg shadow overflow-x-auto min-h-[150px] whitespace-pre-wrap font-mono">
+    class="w-full max-w-4xl h-[500px] bg-gray-900 text-gray-100 p-4 rounded-xl shadow overflow-x-auto overflow-y-auto whitespace-pre-wrap font-mono">
   </pre>
 
   <script>
@@ -88,7 +90,7 @@
 
       const toast = document.createElement('div');
       toast.textContent = "✅ Resultado copiado!";
-      toast.className = "fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-500 z-50";
+      toast.className = "fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-500 z-50";
       document.body.appendChild(toast);
       setTimeout(() => { toast.classList.add('opacity-100'); }, 10);
       setTimeout(() => { toast.classList.remove('opacity-100'); }, 2000);
