@@ -2,9 +2,9 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Beautify JSON</title>
+  <title>Mini App</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <style>
     /* Cores JSON */
     .key { color: #2563eb; }      /* Azul */
@@ -12,90 +12,188 @@
     .number { color: #059669; }   /* Verde */
     .boolean { color: #1e40af; }  /* Azul forte */
     .null { color: #9333ea; }     /* Roxo */
+
+    /* Animação lenta para engrenagem */
+    .animate-spin-slow {
+      animation: spin 6s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col items-center p-8">
+<body class="bg-gray-100 text-gray-900 min-h-screen flex">
 
-  <h2 class="text-3xl font-bold mb-8 text-gray-800">Beautify JSON</h2>
+  <!-- MENU LATERAL -->
+  <aside class="w-60 bg-blue-700 text-white flex flex-col p-6 space-y-4 shadow-lg">
+    <h1 class="text-xl font-bold mb-6">Mini App</h1>
+    <button data-tela="home" class="menu-btn text-left px-2 py-2 rounded hover:bg-blue-600 transition">🏠 Home</button>
+    <button data-tela="json" class="menu-btn text-left px-2 py-2 rounded hover:bg-blue-600 transition">📝 JSON Formatter</button>
+    <button data-tela="caracteres" class="menu-btn text-left px-2 py-2 rounded hover:bg-blue-600 transition">🔤 Count Characters</button>
+  </aside>
 
-  <!-- Input -->
-  <textarea 
-    id="jsonInput" 
-    placeholder="Cole seu JSON aqui..." 
-    class="w-full max-w-4xl h-[200px] p-4 border border-gray-300 rounded-xl shadow focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none bg-white text-gray-900 font-mono mb-4">
-  </textarea>
+  <!-- CONTEÚDO -->
+  <main class="flex-grow flex flex-col items-center p-8">
 
-  <!-- Botões -->
-  <div class="flex space-x-4 mb-6">
-    <button onclick="beautify()" class="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition">Formatar</button>
-    <button onclick="limparInput()" class="px-6 py-2 bg-yellow-400 text-gray-900 rounded-lg shadow hover:bg-yellow-500 transition">Limpar Input</button>
-    <button onclick="limparResultado()" class="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition">Limpar Resultado</button>
-    <button onclick="copiarResultado()" class="px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">Copiar Resultado</button>
-  </div>
+    <!-- TELA HOME -->
+    <section id="tela-home" class="w-full h-full flex flex-col items-center justify-center hidden">
+      <i data-lucide="settings" class="w-24 h-24 text-blue-600 animate-spin-slow"></i>
+      <h2 class="text-3xl font-bold mt-6 text-gray-800">Bem-vindo ao Mini App</h2>
+      <p class="text-gray-600 mt-2">Escolha uma opção no menu lateral</p>
+    </section>
 
-  <!-- Output -->
-  <pre 
-    id="output" 
-    class="w-full max-w-4xl h-[500px] bg-gray-900 text-gray-100 p-4 rounded-xl shadow overflow-x-auto overflow-y-auto whitespace-pre-wrap font-mono">
-  </pre>
+    <!-- TELA FORMATAR JSON -->
+    <section id="tela-json" class="w-full hidden flex flex-col items-center">
+      <h2 class="text-3xl font-bold mb-8 text-gray-800">Beautify JSON</h2>
+
+      <!-- Input -->
+      <textarea 
+        id="jsonInput" 
+        placeholder="Cole seu JSON aqui..." 
+        class="w-full max-w-4xl h-[200px] p-4 border border-gray-300 rounded-xl shadow focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none bg-white text-gray-900 font-mono mb-6">
+      </textarea>
+
+      <!-- Botões centralizados -->
+      <div class="w-full flex justify-center space-x-4 mb-6">
+        <button id="btnBeautify" class="px-6 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 transition">Formatar</button>
+        <button id="btnLimparTudo" class="px-6 py-2 bg-red-500 text-white rounded shadow hover:bg-red-600 transition">Limpar Tudo</button>
+        <button id="btnCopiar" class="px-6 py-2 bg-green-500 text-white rounded shadow hover:bg-green-600 transition">Copiar Resultado</button>
+      </div>
+
+      <!-- Output -->
+      <pre 
+        id="output" 
+        class="w-full max-w-4xl h-[500px] bg-gray-900 text-gray-100 p-4 rounded-xl shadow overflow-x-auto overflow-y-auto whitespace-pre-wrap font-mono">
+      </pre>
+    </section>
+
+    <!-- TELA CONTAGEM DE CARACTERES -->
+    <section id="tela-caracteres" class="w-full hidden flex flex-col items-center">
+      <h2 class="text-3xl font-bold mb-8 text-gray-800">Count Characters</h2>
+
+      <!-- Resultado -->
+      <p id="resultadoContagem" class="mb-4 text-lg font-semibold text-gray-700">Total de caracteres: 0</p>
+
+      <!-- Input -->
+      <textarea 
+        id="textoContagem" 
+        placeholder="Digite ou cole seu texto aqui..." 
+        class="w-full max-w-4xl h-[200px] p-4 border border-gray-300 rounded-xl shadow focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none bg-white text-gray-900 mb-6">
+      </textarea>
+
+      <!-- Botões centralizados -->
+      <div class="w-full flex justify-center space-x-4">
+        <button id="btnContar" class="px-6 py-2 bg-purple-500 text-white rounded shadow hover:bg-purple-600 transition">
+          Contar
+        </button>
+        <button id="btnLimparCampo" class="px-6 py-2 bg-red-500 text-white rounded shadow hover:bg-red-600 transition">
+          Limpar Campo
+        </button>
+      </div>
+    </section>
+
+  </main>
 
   <script>
-    function syntaxHighlight(json) {
-      json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      return json.replace(/("(\\u[\da-fA-F]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+-]?\d+)?)/g,
-        function (match) {
-          let cls = 'number';
-          if (/^"/.test(match)) {
-            if (/:$/.test(match)) {
-              cls = 'key';
-            } else {
-              cls = 'string';
-            }
-          } else if (/true|false/.test(match)) {
-            cls = 'boolean';
-          } else if (/null/.test(match)) {
-            cls = 'null';
-          }
-          return '<span class="' + cls + '">' + match + '</span>';
-        });
-    }
+    document.addEventListener("DOMContentLoaded", function() {
 
-    function beautify() {
-      const input = document.getElementById("jsonInput").value;
-      try {
-        const obj = JSON.parse(input);
-        const pretty = JSON.stringify(obj, null, 4);
-        document.getElementById("output").innerHTML = syntaxHighlight(pretty);
-      } catch (e) {
-        document.getElementById("output").textContent = "⚠️ JSON inválido!";
+      // Ativar ícones Lucide
+      lucide.createIcons();
+
+      // Função para mostrar telas e destacar menu
+      function mostrarTela(tela) {
+        document.getElementById("tela-home").classList.add("hidden");
+        document.getElementById("tela-json").classList.add("hidden");
+        document.getElementById("tela-caracteres").classList.add("hidden");
+
+        document.getElementById(`tela-${tela}`).classList.remove("hidden");
+
+        const botoes = document.querySelectorAll(".menu-btn");
+        botoes.forEach(btn => btn.classList.remove("bg-blue-900"));
+
+        const ativo = document.querySelector(`.menu-btn[data-tela="${tela}"]`);
+        if (ativo) ativo.classList.add("bg-blue-900");
       }
-    }
 
-    function limparResultado() {
-      document.getElementById("output").textContent = "";
-    }
+      // Adicionar event listeners para o menu
+      const botoesMenu = document.querySelectorAll(".menu-btn");
+      botoesMenu.forEach(btn => {
+        btn.addEventListener("click", () => mostrarTela(btn.dataset.tela));
+      });
 
-    function limparInput() {
-      document.getElementById("jsonInput").value = "";
-    }
+      // Exibir tela inicial
+      mostrarTela("home");
 
-    function copiarResultado() {
-      const outputElement = document.getElementById("output");
-      const tempElement = document.createElement("textarea");
-      tempElement.value = outputElement.innerText;
-      document.body.appendChild(tempElement);
-      tempElement.select();
-      document.execCommand("copy");
-      document.body.removeChild(tempElement);
+      // Botões do Beautify JSON
+      document.getElementById("btnBeautify").addEventListener("click", function() {
+        const input = document.getElementById("jsonInput").value;
+        try {
+          const obj = JSON.parse(input);
+          const pretty = JSON.stringify(obj, null, 4);
+          document.getElementById("output").innerHTML = syntaxHighlight(pretty);
+        } catch (e) {
+          document.getElementById("output").textContent = "⚠️ JSON inválido!";
+        }
+      });
 
-      const toast = document.createElement('div');
-      toast.textContent = "✅ Resultado copiado!";
-      toast.className = "fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-500 z-50";
-      document.body.appendChild(toast);
-      setTimeout(() => { toast.classList.add('opacity-100'); }, 10);
-      setTimeout(() => { toast.classList.remove('opacity-100'); }, 2000);
-      setTimeout(() => { document.body.removeChild(toast); }, 2500);
-    }
+      document.getElementById("btnLimparTudo").addEventListener("click", function() {
+        document.getElementById("jsonInput").value = "";
+        document.getElementById("output").textContent = "";
+      });
+
+      document.getElementById("btnCopiar").addEventListener("click", function() {
+        const outputElement = document.getElementById("output");
+        const tempElement = document.createElement("textarea");
+        tempElement.value = outputElement.innerText;
+        document.body.appendChild(tempElement);
+        tempElement.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempElement);
+
+        const toast = document.createElement('div');
+        toast.textContent = "✅ Resultado copiado!";
+        toast.className = "fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-500 z-50";
+        document.body.appendChild(toast);
+        setTimeout(() => { toast.classList.add('opacity-100'); }, 10);
+        setTimeout(() => { toast.classList.remove('opacity-100'); }, 2000);
+        setTimeout(() => { document.body.removeChild(toast); }, 2500);
+      });
+
+      // Contagem de caracteres
+      document.getElementById("btnContar").addEventListener("click", function() {
+        const texto = document.getElementById("textoContagem").value;
+        document.getElementById("resultadoContagem").textContent = "Total de caracteres: " + texto.length;
+      });
+
+      document.getElementById("btnLimparCampo").addEventListener("click", function() {
+        document.getElementById("textoContagem").value = "";
+        document.getElementById("resultadoContagem").textContent = "Total de caracteres: 0";
+      });
+
+      // Função para destacar JSON
+      function syntaxHighlight(json) {
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[\da-fA-F]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+-]?\d+)?)/g,
+          function (match) {
+            let cls = 'number';
+            if (/^"/.test(match)) {
+              if (/:$/.test(match)) {
+                cls = 'key';
+              } else {
+                cls = 'string';
+              }
+            } else if (/true|false/.test(match)) {
+              cls = 'boolean';
+            } else if (/null/.test(match)) {
+              cls = 'null';
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+          });
+      }
+
+    });
   </script>
+
 </body>
 </html>
